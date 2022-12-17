@@ -9,14 +9,16 @@
     -> VS Code 좌측 메뉴바에서 네모네모네모를 클릭합니다 -> prettier를 검색하고, 가장 위에 뜨는 익스텐션 옵션을 설치합니다. -> 프로젝트 폴더로 돌아와서 js 파일을 생성하고, 아무거나 막 치면 자동으로 코드 포맷을 맞춰줍니다!!! (상세한 포맷 설정은 프로젝트폴더 루트폴더에 위치한 .prettierrc.js 파일을 참고하세요~~)
 ### 모듈과 prettier 설치가 끝났다면, DB 설정하기
 1. 프로젝트 루트 폴더(package.json 폴더가 있는 곳)에 ".env" 파일 생성 후, 아래 내용 복붙하시고, 각자 rds 정보 입력하셔서 저장해주세요.
-`PORT=3000
+```
+PORT=3000
 MYSQL_USERNAME=
 MYSQL_PASSWORD=
 MYSQL_DATABASE=
 MYSQL_DATABASE_TEST=
 MYSQL_HOST=
 TOKEN_SECRETE_KEY=hanghae99_token_secrete
-CRYPTO_SECRETE_KEY=hanghae99_crypto_secrete`
+CRYPTO_SECRETE_KEY=hanghae99_crypto_secrete
+```
 
 2. "env" 파일을 저장하셨다면, "npm run db:create" 명령어를 터미널에 입력해 db를 생성합니다.
 3. 이후, "npm run db:migrate" 명령어를 터미널에 입력해 db를 migration 시켜줍니다. 끝!
