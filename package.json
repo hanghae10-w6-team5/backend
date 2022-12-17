@@ -2,9 +2,8 @@
   "name": "talduk-market",
   "version": "1.0.0",
   "description": "",
-  "main": ".eslintrc.js",
+  "main": ".prettierrc.js",
   "scripts": {
-    "lint:src": "eslint src",
     "dev": "nodemon src/app.js",
     "db:create": "npx sequelize db:create --config ./src/config/config.js",
     "db:migrate": "npx sequelize db:migrate --config ./src/config/config.js --migrations-path ./src/migrations --models-path ./src/models",
@@ -29,13 +28,6 @@
     "sequelize": "^6.27.0"
   },
   "devDependencies": {
-    "eslint": "^8.2.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^4.2.1",
     "nodemon": "^2.0.20",
     "sequelize-cli": "^6.5.2"
   }
