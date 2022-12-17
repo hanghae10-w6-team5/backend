@@ -27,7 +27,7 @@ module.exports = {
                 },
                 onDelete: 'restrict',
             },
-            content: {
+            comment: {
                 allowNull: false,
                 type: Sequelize.DataTypes.STRING,
             },
