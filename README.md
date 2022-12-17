@@ -30,7 +30,8 @@ CRYPTO_SECRETE_KEY=hanghae99_crypto_secrete`
 아래의 예제 코드를 보면서 이해해보시면 좋을 것 같습니다.
 
 1. users.controller.createUser 메서드에서 에러 발생 상황
-`createUser = async (req, res, next) => {
+```
+createUser = async (req, res, next) => {
     try {
         const { nickname, password, confirm } = req.body;
 
@@ -44,21 +45,24 @@ CRYPTO_SECRETE_KEY=hanghae99_crypto_secrete`
         next(err); 
         // 라우터에서 next(err)를 호출하면, app이 죽지 않고, 다음 미들웨어로 err 객체를 내보냅니다. 이것을 controller -> router -> index.router -> app 의 경로로 넘겨서 결국 app.js 파일의 "app.use(errorHandler)"에서 받아 res 처리를 하게 됩니다.
     }
-};`
+};
+```
 
 2. 위의 예제에서, req.body 검사를 통과해 users.service.createUser 메서드를 정상 호출했지만, users.service.createUser 메서드에서 에러가 발생한 상황
-`createUser = async (nickname, password, confirm) => {
-        ...
+```
+createUser = async (nickname, password, confirm) => {
+    ...
 
-        const isExistUser = await this.findUser(nickname);
+    const isExistUser = await this.findUser(nickname);
 
-        if (isExistUser) {
-            throw new ValidationError('중복된 닉네임입니다.', 412);
-        }         
-        ...
+    if (isExistUser) {
+        throw new ValidationError('중복된 닉네임입니다.', 412);
+    }         
+    ...
 
-        return user;
-    };`
+    return user;
+};
+```
 
    - 위의 controller 코드 예시에서는 try...catch 문을 통해 에러를 핸들링하고 있는데, 여기는 없죠?
    - 이유는 바로 아래의 순서로 app이 실행되기 때문입니다.
@@ -71,20 +75,23 @@ CRYPTO_SECRETE_KEY=hanghae99_crypto_secrete`
    - 결론적으로 이 에러 객체는 처음 에러가 발생한 지점부터 남아있는 모든 미들웨어를 거쳐 app으로 돌아가게 됩니다.
 
 3. app에 도착한 에러객체의 행방은???
-`...
+```
+...
 app.use('/api', routes);
 app.use(errorLogger); // Error Logger -> 에러 로그를 찍고 next(err)로 다음 미들웨어인 errorHandler를 호출합니다.
 app.use(errorHandler); // Error Handler
 app.listen(PORT, () => {
     console.log(PORT, '서버를 실행 중 입니다.');
 });
-...`
+...
+```
    - 위의 service layer 예제에서 발생한 에러는 드이어! app에 도착했습니다.
    - service에서 던진 에러는 app.use('/api', routes)를 호출했을 때, 발생했습니다.
    - 이제 next(err)는 다음 라우터인 app.use(errorLogger)로 전달됩니다. 
 
 4. error-handler.middleware.js
-`const errorLogger = (error, request, response, next) => {
+```
+const errorLogger = (error, request, response, next) => {
     // 에러 로깅 코드 구현 
     next(error);
 };
@@ -97,7 +104,7 @@ const errorHandler = (error, req, res, next) => {
 };
 
 module.exports = { errorLogger, errorHandler };
-`
+```
    - 위의 코드는 에러 핸들러 미들웨어를 정의한 error-handler.middleware.js 파일의 모든 내용입니다.
    - 여기서 클래스로 정의한 로거와 핸들러는 app.js에서 불러와 사용하고 있습니다.
    - 보시면, errorLogger 미들웨어에서 에러 로그를 찍도록 처리하고, 마지막에 next(error)를 호출해 다음 미들웨어로 에러 객체를 전달합니다.
