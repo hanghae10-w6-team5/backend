@@ -44,6 +44,10 @@ module.exports = {
                 type: Sequelize.DataTypes.DATE,
                 defaultValue: Sequelize.DataTypes.NOW,
             },
+            likes: {
+                allowNull: true,
+                type: Sequelize.DataTypes.NUMBER,
+            },
         });
     },
     async down(queryInterface, Sequelize) {

@@ -63,6 +63,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.DATE,
                 defaultValue: DataTypes.NOW,
             },
+            likes: {
+                allowNull: false,
+                type: DataTypes.NUMBER,
+            },
         },
         {
             sequelize,
