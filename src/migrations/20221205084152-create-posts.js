@@ -16,7 +16,7 @@ module.exports = {
                     model: 'Users',
                     key: 'userId',
                 },
-                onDelete: 'restrict',
+                onDelete: 'cascade',
             },
             title: {
                 allowNull: false,
