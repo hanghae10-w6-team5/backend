@@ -16,7 +16,7 @@ module.exports = {
                     model: 'Users',
                     key: 'userId',
                 },
-                onDelete: 'restrict',
+                onDelete: 'cascade',
             },
             title: {
                 allowNull: false,
@@ -43,10 +43,6 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.DataTypes.DATE,
                 defaultValue: Sequelize.DataTypes.NOW,
-            },
-            likes: {
-                allowNull: true,
-                type: Sequelize.DataTypes.NUMBER,
             },
         });
     },

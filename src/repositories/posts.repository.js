@@ -1,18 +1,34 @@
-const { Posts } = require('../models');
-const { InvalidParamsError } = require('../exception/index.exception');
+const { Posts, Users, Comments, likes } = require('../models');
+
 class PostsRepository extends Posts {
     constructor() {
         super();
     }
 
     getOnePost = async (postId) => {
-        const post = await Posts.findByPk(postId);
-        if (!post)
-            throw new InvalidParamsError(
-                '해당 게시글을 찾을 수 없습니다.',
-                404
-            );
-        res.status(200).json({ data: post });
+        const post = await Posts.findOne({
+            where: { postId },
+            include: [
+                { model: Users, attributes: ['id'] },
+                {
+                    model: likes,
+                    as: 'likes',
+                    attributes: ['likeId'],
+                },
+            ],
+        });
+        return post;
+    };
+
+    getAllComment = async (postId) => {
+        const Comment = await Comments.findAll({
+            raw: true,
+            where: { postId },
+            attributes: ['commentId', 'comment', 'updatedAt'],
+            order: [['createdAt', 'DESC']],
+            include: [{ model: Users, attributes: ['id'] }],
+        });
+        return Comment;
     };
 }
 module.exports = PostsRepository;
