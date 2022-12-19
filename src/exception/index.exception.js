@@ -19,9 +19,9 @@ class ValidationError extends Error {
 class AuthenticationError extends Error {
     constructor(message, status) {
         super(message);
-        this.status = status || 400;
+        this.status = status || 403;
         this.name = 'AuthenticationError';
-        if (!message) this.message = '요청한 데이터 형식이 올바르지 않습니다.';
+        if (!message) this.message = '로그인이 필요한 서비스입니다.';
     }
 }
 
