@@ -20,27 +20,53 @@ class CommentsService {
             userId,
             comment,
         });
+
         // 만약, newComment가 null이면, 에러를 던짐
         if (!newComment) throw new ValidationError();
 
+        const commentWithId = await this.commentsRepository.findComment(
+            newComment.commentId
+        );
+
         // 생성된 댓글과 작성한 유저 정보를 컨트롤러에 전달
         return {
-            id: newComment['User.id'],
-            comment: newComment.comment,
-            updatedAt: newComment.updatedAt,
+            id: commentWithId['User.id'],
+            comment: commentWithId.comment,
+            updatedAt: commentWithId.updatedAt,
         };
     };
 
-    updateComment = async (postId, commentId, userId, comment) => {
-        const editComment = await this.commentsRepository.updateComment(
+    editComment = async (postId, commentId, userId, comment) => {
+        const commentData = await this.commentsRepository.findComment(
+            commentId
+        );
+
+        if (!commentData) {
+            throw new ValidationError('해당 댓글을 찾을 수 없습니다.', 404);
+        } else if (commentData.postId !== postId) {
+            throw new ValidationError('해당 게시글을 찾을 수 없습니다.', 404);
+        } else if (commentData.userId !== userId) {
+            throw new AuthenticationError('권한이 없는 유저입니다.', 404);
+        }
+
+        const editCommentData = await this.commentsRepository.updateComment(
             postId,
             commentId,
             userId,
             comment
         );
 
-        if (!editComment) throw new ValidationError();
-        return comment;
+        if (!editCommentData) throw new ValidationError();
+
+        const updateComment = await this.commentsRepository.findComment(
+            commentId
+        );
+
+        console.log(updateComment);
+        return {
+            updateComment: updateComment.comment,
+            updatedAt: updateComment.updatedAt,
+        };
     };
 }
 

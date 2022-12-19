@@ -40,7 +40,7 @@ class CommentsController {
             });
 
             // 댓글 저장 성공시, 클라로 새로 추가한 댓글 정보 전달
-            res.status(201).json({ newComment });
+            res.status(201).json(newComment);
         } catch (err) {
             next(err);
         }
@@ -61,13 +61,13 @@ class CommentsController {
                 );
             }
 
-            const editComment = await this.commentsService.updateComment(
+            const editComment = await this.commentsService.editComment(
                 Number(postId),
                 Number(commentId),
                 userId,
                 comment
             );
-            res.status(200).json({ updateComment: editComment });
+            res.status(200).json(editComment);
         } catch (err) {
             next(err);
         }
