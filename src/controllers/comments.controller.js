@@ -45,6 +45,33 @@ class CommentsController {
             next(err);
         }
     };
+
+    updateComment = async (req, res, next) => {
+        try {
+            const { postId, commentId } = req.params;
+            const userId = 1; //res.locals.user
+            const { comment } = req.body;
+
+            if (!comment || typeof comment !== 'string') {
+                throw new InvalidParamsError();
+            } else if (!userId) {
+                throw new AuthenticationError(
+                    '로그인이 필요한 서비스입니다.',
+                    403
+                );
+            }
+
+            const editComment = await this.commentsService.updateComment(
+                Number(postId),
+                Number(commentId),
+                userId,
+                comment
+            );
+            res.status(200).json({ updateComment: editComment });
+        } catch (err) {
+            next(err);
+        }
+    };
 }
 
 module.exports = CommentsController;

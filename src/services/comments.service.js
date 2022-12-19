@@ -30,6 +30,18 @@ class CommentsService {
             updatedAt: newComment.updatedAt,
         };
     };
+
+    updateComment = async (postId, commentId, userId, comment) => {
+        const editComment = await this.commentsRepository.updateComment(
+            postId,
+            commentId,
+            userId,
+            comment
+        );
+
+        if (!editComment) throw new ValidationError();
+        return comment;
+    };
 }
 
 module.exports = CommentsService;
