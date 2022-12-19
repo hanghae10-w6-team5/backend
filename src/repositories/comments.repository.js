@@ -1,8 +1,4 @@
 const { Op } = require('sequelize');
-const {
-    ValidationError,
-    AuthenticationError,
-} = require('../exception/index.exception');
 
 class CommentsRepository {
     // 레포지토리는 db와 직접 연결되어 있으므로, 외부에서 데이터 모델인 멤버변수에 접근하지 못하게 private으로 선언
@@ -36,7 +32,7 @@ class CommentsRepository {
         });
     };
 
-    updateComment = async (postId, commentId, userId, comment) => {
+    updateComment = async (commentId, userId, comment) => {
         return await this.#commentsModel.update(
             { comment },
             {
@@ -45,6 +41,14 @@ class CommentsRepository {
                 },
             }
         );
+    };
+
+    deleteComment = async (commentId, userId) => {
+        return await this.#commentsModel.destroy({
+            where: {
+                [Op.and]: [{ commentId }, { userId }],
+            },
+        });
     };
 }
 

@@ -50,23 +50,40 @@ class CommentsService {
         }
 
         const editCommentData = await this.commentsRepository.updateComment(
-            postId,
             commentId,
             userId,
             comment
         );
 
-        if (!editCommentData) throw new ValidationError();
+        if (!editCommentData[0]) throw new ValidationError();
 
-        const updateComment = await this.commentsRepository.findComment(
+        const result = await this.commentsRepository.findComment(commentId);
+
+        return {
+            updateComment: result.comment,
+            updatedAt: result.updatedAt,
+        };
+    };
+
+    deleteComment = async (postId, commentId, userId) => {
+        const commentData = await this.commentsRepository.findComment(
             commentId
         );
 
-        console.log(updateComment);
-        return {
-            updateComment: updateComment.comment,
-            updatedAt: updateComment.updatedAt,
-        };
+        if (!commentData) {
+            throw new ValidationError('해당 댓글을 찾을 수 없습니다.', 404);
+        } else if (commentData.postId !== postId) {
+            throw new ValidationError('해당 게시글을 찾을 수 없습니다.', 404);
+        } else if (commentData.userId !== userId) {
+            throw new AuthenticationError('권한이 없는 유저입니다.', 404);
+        }
+
+        const result = await this.commentsRepository.deleteComment(
+            commentId,
+            userId
+        );
+
+        if (!result) throw new ValidationError();
     };
 }
 
