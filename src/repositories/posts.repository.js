@@ -30,5 +30,13 @@ class PostsRepository extends Posts {
         });
         return Comment;
     };
+
+    updatePost = async (userId, postId, title, detail, price, thumbnail) => {
+        const post = await Posts.update(
+            { title, detail, price, thumbnail },
+            { where: { postId: postId, userId: userId } }
+        );
+        return post;
+    };
 }
 module.exports = PostsRepository;
