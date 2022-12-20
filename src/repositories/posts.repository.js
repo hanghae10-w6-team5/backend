@@ -1,12 +1,12 @@
-const { Posts, Users, Comments, likes } = require('../models');
-
-class PostsRepository extends Posts {
+const { Posts, Users, Comments, likes } = require('../models/');
+class PostsRepository {
     constructor() {
-        super();
-        this.postsModel = new Posts();
-        this.usersModel = new Users();
+        this.postsModel = Posts;
+        this.usersModel = Users;
+        this.commentsModel = Comments;
+        this.likesModel = likes;
     }
-    
+
     createPost = async (userId, title, price, detail, thumbnail) => {
         return this.postsModel.create({
             userId,
@@ -24,12 +24,12 @@ class PostsRepository extends Posts {
     };
 
     getOnePost = async (postId) => {
-        const post = await Posts.findOne({
+        const post = await this.postsModel.findOne({
             where: { postId },
             include: [
-                { model: Users, attributes: ['id'] },
+                { model: this.usersModel, as: 'User', attributes: ['id'] },
                 {
-                    model: likes,
+                    model: this.likesModel,
                     as: 'likes',
                     attributes: ['likeId'],
                 },
@@ -39,14 +39,14 @@ class PostsRepository extends Posts {
     };
 
     getAllComment = async (postId) => {
-        const Comment = await Comments.findAll({
+        const comment = await this.commentsModel.findAll({
             raw: true,
             where: { postId },
             attributes: ['commentId', 'comment', 'updatedAt'],
             order: [['createdAt', 'DESC']],
-            include: [{ model: Users, attributes: ['id'] }],
+            include: [{ model: this.usersModel, attributes: ['id'] }],
         });
-        return Comment;
+        return comment;
     };
 }
 
