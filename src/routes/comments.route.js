@@ -5,6 +5,6 @@ const commentsController = new CommentsController();
 
 router.post('/:postId/comments', commentsController.createComment);
 router.patch('/:postId/comments/:commentId', commentsController.updateComment);
-router.delete('/:postId/comments/:commentId');
+router.delete('/:postId/comments/:commentId', commentsController.deleteComment);
 
 module.exports = router;

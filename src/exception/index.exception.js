@@ -1,3 +1,4 @@
+//값이 존재하지않거나 잘못된 값으로 들어왔을때 
 class InvalidParamsError extends Error {
     constructor(message, status) {
         super(message);
@@ -7,6 +8,7 @@ class InvalidParamsError extends Error {
     }
 }
 
+// 유효성 인증 x
 class ValidationError extends Error {
     constructor(message, status) {
         super(message);
@@ -16,6 +18,7 @@ class ValidationError extends Error {
     }
 }
 
+// 유저 인증과 관련한 에러  
 class AuthenticationError extends Error {
     constructor(message, status) {
         super(message);
