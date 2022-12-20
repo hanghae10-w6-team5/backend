@@ -126,6 +126,31 @@ class PostsService {
             throw error;
         }
     };
+
+    deletePost = async (userId, postId) => {
+        const deletePost = await this.postsRepository.deletePost(
+            userId,
+            postId
+        );
+
+        if (deletePost === 0)
+            throw new ValidationError('게시글을 삭제하였습니다.', 200);
+
+        if (userId !== updatePost.userId) {
+            throw new AuthenticationError('권한이 없는 유저입니다.', 403);
+        }
+
+        return deletePost;
+    };
+
+    findPost = async (postId) => {
+        const existPost = await this.postsRepository.findPost(postId);
+
+        if (!existPost)
+            throw new ValidationError('해당 게시글을 찾을 수 없습니다.', 404);
+
+        return existPost;
+    };
 }
 
 module.exports = PostsService;

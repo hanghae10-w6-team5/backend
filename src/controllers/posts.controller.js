@@ -97,6 +97,37 @@ class PostsController {
             next(error);
         }
     };
+
+    deletePost = async (req, res, next) => {
+        try {
+            // const userId = res.locals.user;
+            // const userId = 1;
+            const { postId } = req.params;
+            const userId = req.get('userId');
+
+            if (!postId) {
+                throw new InvalidParamsError(
+                    '해당 게시글을 찾을 수 없습니다.',
+                    40
+                );
+            }
+
+            if (!userId) {
+                throw new InvalidParamsError(
+                    '로그인이 필요한 서비스 입니다.',
+                    403
+                );
+            }
+
+            await this.postsService.findPost(postId);
+
+            await this.postsService.deletePost(userId, postId);
+
+            res.status(200).json({ message: '게시글을 삭제 하였습니다.' });
+        } catch (error) {
+            next(error);
+        }
+    };
 }
 
 module.exports = PostsController;

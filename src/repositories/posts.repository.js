@@ -56,6 +56,22 @@ class PostsRepository {
         );
         return post;
     };
+
+    deletePost = async (userId, postId) => {
+        const deletePost = await this.postsModel.destroy({
+            where: { userId, postId },
+        });
+
+        return deletePost;
+    };
+
+    findPost = async (postId) => {
+        const existPost = await this.postsModel.findOne({
+            where: { postId },
+        });
+
+        return existPost;
+    };
 }
 
 module.exports = PostsRepository;
