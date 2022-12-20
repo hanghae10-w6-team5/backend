@@ -58,10 +58,10 @@ class PostsService {
                     '해당 게시글을 찾을 수 없습니다.',
                     404
                 );
-            console.log(post);
+
             let comments = [];
             if (Comment.length) {
-                Comment.forEach((c) => {
+                Comment.map((c) => {
                     comments.push({
                         commentId: c.commentId,
                         id: c['User.id'],
@@ -106,6 +106,22 @@ class PostsService {
                 thumbnail
             );
             const updatePost = await this.postsRepository.getOnePost(postId);
+
+            if (!userId) {
+                throw new InvalidParamsError(
+                    '로그인이 필요한 서비스 입니다.',
+                    403
+                );
+            }
+            if (userId !== updatePost.userId) {
+                throw new InvalidParamsError('권한이 없는 유저입니다.', 403);
+            }
+            if (!title || !detail || !price || thumbnail) {
+                throw new InvalidParamsError(
+                    '요청한 데이터 형식이 올바르지 않습니다.',
+                    400
+                );
+            }
 
             return {
                 postId: updatePost.postId,

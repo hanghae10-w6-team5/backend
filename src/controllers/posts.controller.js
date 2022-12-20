@@ -59,12 +59,9 @@ class PostsController {
         try {
             const { postId } = req.params;
             const { title, detail, price, thumbnail } = req.body;
+            const userId = req.get('userId');
             // const userId = res.locals.user;
-            if (!title || !detail) {
-                throw new InvalidParamsError();
-            }
-            const userId = 1;
-            console.log(postId, userId, title, detail, price, thumbnail);
+            // const userId = 1;
             const updatePost = await this.postsService.updatePost(
                 userId,
                 postId,
@@ -73,7 +70,6 @@ class PostsController {
                 price,
                 thumbnail
             );
-
             res.status(200).json({ data: updatePost });
         } catch (error) {
             next(error);
