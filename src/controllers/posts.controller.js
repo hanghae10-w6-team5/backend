@@ -8,37 +8,36 @@ class PostsController {
         this.postsService = new PostsService();
     }
 
+    //전체조회
+
     postLookup = async (req, res, next) => {
         try {
             const posts = await this.postsService.findAllPost();
-            if (!posts) throw new ValidationError();
             res.status(200).json({ data: posts });
         } catch (error) {
-            next(error);
+            next(error); //에러 핸들링했기때문에 에러를 던진다 -> app.js
         }
     };
+
+    //글작성하기
 
     createPost = async (req, res, next) => {
         try {
             const { title, price, detail, thumbnail } = req.body;
-            const userId = req.get('userId');
+            const { usersId } = req.header;
             //const userId = res.locals.user;
 
-            if (!title || !price || !detail) throw new InvalidParamsError();
-
-            const post = await this.postsService.createPost(
-                userId,
+            const posts = await this.postsService.createPost(
+                usersId,
                 title,
                 price,
                 detail,
                 thumbnail
             );
 
-            if (!post) throw new ValidationError();
-
-            res.status(201).json({ postId: post });
-        } catch (err) {
-            next(err);
+            res.status(201).json({ postId: posts });
+        } catch (error) {
+            next(error);
         }
     };
 
@@ -47,7 +46,7 @@ class PostsController {
             const { postId } = req.params;
             const post = await this.postsService.getOnePost(postId);
 
-            if (!post) throw new InvalidParamsError();
+            if (!postId) throw new InvalidParamsError();
 
             res.status(200).json({ data: post });
         } catch (error) {
