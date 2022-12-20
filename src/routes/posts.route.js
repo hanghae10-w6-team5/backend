@@ -7,5 +7,6 @@ const postsController = new PostsController();
 router.get('/', postsController.postLookup);
 router.get('/:postId', postsController.getOnePost);
 router.post('/', postsController.createPost);
+router.put('/:postId', postsController.updatePost);
 
 module.exports = router;

@@ -50,7 +50,7 @@ class PostsRepository {
     };
 
     updatePost = async (userId, postId, title, detail, price, thumbnail) => {
-        const post = await Posts.update(
+        const post = await this.postsModel.update(
             { title, detail, price, thumbnail },
             { where: { postId: postId, userId: userId } }
         );

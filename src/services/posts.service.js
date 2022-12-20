@@ -58,9 +58,9 @@ class PostsService {
                     '해당 게시글을 찾을 수 없습니다.',
                     404
                 );
-
+            console.log(post);
             let comments = [];
-            if (Comment.length !== 0) {
+            if (Comment.length) {
                 Comment.forEach((c) => {
                     comments.push({
                         commentId: c.commentId,
@@ -71,18 +71,16 @@ class PostsService {
                 });
             }
             return {
-                data: {
-                    postId: post.postId,
-                    id: post.User.id,
-                    title: post.title,
-                    detail: post.detail,
-                    price: post.price,
-                    thumbnail: post.thumbnail,
-                    createdAt: post.createdAt,
-                    updatedAt: post.updatedAt,
-                    likes: post.likes.length,
-                    comments,
-                },
+                postId: post.postId,
+                id: post.User.id,
+                title: post.title,
+                detail: post.detail,
+                price: post.price,
+                thumbnail: post.thumbnail,
+                createdAt: post.createdAt,
+                updatedAt: post.updatedAt,
+                likes: post.likes.length,
+                comments,
             };
         } catch (error) {
             throw error;
@@ -91,7 +89,15 @@ class PostsService {
 
     updatePost = async (userId, postId, title, detail, price, thumbnail) => {
         try {
-            const post = await this.postsRepository.updatePost(
+            const post = await this.postsRepository.getOnePost(postId);
+
+            if (!post)
+                throw new ValidationError(
+                    '해당 게시글을 찾을 수 없습니다.',
+                    404
+                );
+
+            await this.postsRepository.updatePost(
                 userId,
                 postId,
                 title,
@@ -99,38 +105,18 @@ class PostsService {
                 price,
                 thumbnail
             );
-            if (!post)
-                throw new ValidationError(
-                    '해당 게시글을 찾을 수 없습니다.',
-                    404
-                );
-
-            const Comment = await this.postsRepository.getAllComment(postId);
-            let comments = [];
-            if (Comment.length !== 0) {
-                Comment.forEach((c) => {
-                    comments.push({
-                        commentId: c.commentId,
-                        id: c['User.id'],
-                        comment: c.comment,
-                        updatedAt: c.updatedAt,
-                    });
-                });
-            }
+            const updatePost = await this.postsRepository.getOnePost(postId);
 
             return {
-                data: {
-                    postId: post.postId,
-                    id: post.id,
-                    title: post.title,
-                    detail: post.detail,
-                    price: post.price,
-                    thumbnail: post.thumbnail,
-                    createdAt: post.createdAt,
-                    updatedAt: post.updatedAt,
-                    likes: post.likes.length,
-                    comments,
-                },
+                postId: updatePost.postId,
+                id: updatePost.id,
+                title: updatePost.title,
+                detail: updatePost.detail,
+                price: updatePost.price,
+                thumbnail: updatePost.thumbnail,
+                createdAt: updatePost.createdAt,
+                updatedAt: updatePost.updatedAt,
+                likes: updatePost.likes.length,
             };
         } catch (error) {
             throw error;
