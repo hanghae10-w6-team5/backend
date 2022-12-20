@@ -25,9 +25,9 @@ module.exports = {
                     model: 'Users',
                     key: 'userId',
                 },
-                onDelete: 'cascade',
+                onDelete: 'restrict',
             },
-            comment: {
+            content: {
                 allowNull: false,
                 type: Sequelize.DataTypes.STRING,
             },
