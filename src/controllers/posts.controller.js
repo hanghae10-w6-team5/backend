@@ -2,6 +2,7 @@ const PostsService = require('../services/posts.service');
 const { InvalidParamsError } = require('../exception/index.exception.js');
 const { ValidationError } = require('sequelize');
 const { authenticate } = require('passport');
+const { validateToken } = require('../util/auth-jwtToken.util');
 
 class PostsController {
     constructor() {
@@ -21,7 +22,8 @@ class PostsController {
     createPost = async (req, res, next) => {
         try {
             const { title, price, detail, thumbnail } = req.body;
-            const userId = req.get('userId');
+            const token = req.get('authentication');
+            const userId = validateToken(token);
             //const userId = res.locals.user;
 
             if (!title || !price || !detail) throw new InvalidParamsError();

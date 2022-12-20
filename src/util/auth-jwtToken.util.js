@@ -2,18 +2,15 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const env = process.env;
 
-let tokenObject = {};
-
 function createToken(id, duration) {
     return jwt.sign({ userId: id }, env.TOKEN_SECRETE_KEY, {
         expiresIn: duration,
     });
 }
 
-const setCookieExpiration = function (hours) {
-    const expires = new Date();
-    expires.setHours(expires.getHours() + hours);
-    return expires;
-};
+function validateToken(token) {
+    const { userId } = jwt.verify(token, env.TOKEN_SECRETE_KEY);
+    return userId;
+}
 
-module.exports = { tokenObject, createToken, setCookieExpiration };
+module.exports = { createToken, validateToken };

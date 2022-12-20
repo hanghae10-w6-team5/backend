@@ -4,6 +4,7 @@ const {
     ValidationError,
     AuthenticationError,
 } = require('../exception/index.exception');
+const { validateToken } = require('../util/auth-jwtToken.util');
 
 class CommentsController {
     constructor() {
@@ -14,7 +15,8 @@ class CommentsController {
         try {
             // 클라에서 전달받은 req 값을 구조분해 할당
             const { postId } = req.params;
-            const userId = req.get('userId');
+            const token = req.get('authentication');
+            const userId = validateToken(token);
             // res.locals.user
             const { comment } = req.body;
 
@@ -48,7 +50,9 @@ class CommentsController {
     updateComment = async (req, res, next) => {
         try {
             const { postId, commentId } = req.params;
-            const userId = req.get('userId'); //res.locals.user
+            const token = req.get('authentication');
+            const userId = validateToken(token);
+            //res.locals.user
             const { comment } = req.body;
 
             if (!comment || typeof comment !== 'string') {
@@ -75,7 +79,9 @@ class CommentsController {
     deleteComment = async (req, res, next) => {
         try {
             const { postId, commentId } = req.params;
-            const userId = req.get('userId'); //res.locals.user
+            const token = req.get('authentication');
+            const userId = validateToken(token);
+            //res.locals.user
 
             if (!userId) {
                 throw new AuthenticationError(
