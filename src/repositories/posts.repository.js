@@ -3,7 +3,25 @@ const { Posts, Users, Comments, likes } = require('../models');
 class PostsRepository extends Posts {
     constructor() {
         super();
+        this.postsModel = new Posts();
+        this.usersModel = new Users();
     }
+    
+    createPost = async (userId, title, price, detail, thumbnail) => {
+        return this.postsModel.create({
+            userId,
+            title,
+            price,
+            detail,
+            thumbnail,
+        });
+    };
+
+    findAllPost = async () => {
+        return await this.postsModel.findAll({
+            include: { model: this.usersModel, attributes: ['id'] },
+        });
+    };
 
     getOnePost = async (postId) => {
         const post = await Posts.findOne({
@@ -31,4 +49,5 @@ class PostsRepository extends Posts {
         return Comment;
     };
 }
+
 module.exports = PostsRepository;
