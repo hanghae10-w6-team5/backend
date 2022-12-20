@@ -71,6 +71,13 @@ class PostsController {
                 thumbnail
             );
 
+            if (!postId) {
+                throw new InvalidParamsError(
+                    '해당 게시글을 찾을 수 없습니다.',
+                    40
+                );
+            }
+
             if (!userId) {
                 throw new InvalidParamsError(
                     '로그인이 필요한 서비스 입니다.',
