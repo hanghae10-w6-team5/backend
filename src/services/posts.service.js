@@ -1,5 +1,9 @@
 const PostsRepository = require('../repositories/posts.repository');
-const { InvalidParamsError, ValidationError, AuthenticationError } = require('../exceptions/index.exception.js');
+const {
+    InvalidParamsError,
+    ValidationError,
+    AuthenticationError,
+} = require('../exception/index.exception');
 
 class PostsService {
     constructor() {
@@ -9,6 +13,8 @@ class PostsService {
     findAllPost = async () => {
         // 저장소(Repository)에게 데이터를 요청합니다.
         const allPost = await this.postsRepository.findAllPost();
+
+        if (!allPost) throw new ValidationError();
 
         // 호출한 Post들을 가장 최신 게시글 부터 정렬합니다.
         allPost.sort((a, b) => {
@@ -20,7 +26,7 @@ class PostsService {
             return {
                 data: {
                     postId: post.postId,
-                    id: post.Users.id,
+                    id: post.User.id,
                     title: post.title,
                     price: post.price,
                     thumbnail: post.thumbnail,
@@ -30,58 +36,55 @@ class PostsService {
         });
     };
 
+    createPost = async (userId, title, price, detail, thumbnail) => {
+        const data = await this.postsRepository.createPost(
+            userId,
+            title,
+            price,
+            detail,
+            thumbnail
+        );
+        //만약 데이터 값이 없으면 null , err 400번을 던짐
+        if (!data) throw new ValidationError();
+        return data.postId;
+    };
 
-createPost = async (userId, title, price, detail, thumbnail) => {
-    const data = await this.postsRepository.createPost(
-        userId,
-        title,
-        price,
-        detail,
-        thumbnail
-    );
-    //만약 데이터 값이 없으면 null , err 400번을 던짐
-    if (!data) throw InvalidParamsError();
-    return data.postId;
-};
+    getOnePost = async (postId) => {
+        try {
+            const post = await this.postsRepository.getOnePost(postId);
+            const Comment = await this.postsRepository.getAllComment(postId);
+            if (!post)
+                throw ValidationError('해당 게시글을 찾을 수 없습니다.', 404);
 
-
-  getOnePost = async (postId) => {
-      try {
-          const post = await this.postsRepository.getOnePost(postId);
-          const Comment = await this.postsRepository.getAllComment(postId);
-          if (!post)
-              throw ValidationError('해당 게시글을 찾을 수 없습니다.', 404);
-
-          let comments = [];
-          if (Comment.length !== 0) {
-              Comment.forEach((c) => {
-                  comments.push({
-                      commentId: c.commentId,
-                      id: c['User.id'],
-                      comment: c.comment,
-                      updatedAt: c.updatedAt,
-                  });
-              });
-          }
-          return {
-              data: {
-                  postId: post.postId,
-                  id: post.id,
-                  title: post.title,
-                  detail: post.detail,
-                  price: post.price,
-                  thumbnail: post.thumbnail,
-                  createdAt: post.createdAt,
-                  updatedAt: post.updatedAt,
-                  likes: post.likes.length,
-                  comments,
-              },
-          };
-      } catch (error) {
-          throw error;
-      }
-  };
+            let comments = [];
+            if (Comment.length !== 0) {
+                Comment.forEach((c) => {
+                    comments.push({
+                        commentId: c.commentId,
+                        id: c['User.id'],
+                        comment: c.comment,
+                        updatedAt: c.updatedAt,
+                    });
+                });
+            }
+            return {
+                data: {
+                    postId: post.postId,
+                    id: post.User.id,
+                    title: post.title,
+                    detail: post.detail,
+                    price: post.price,
+                    thumbnail: post.thumbnail,
+                    createdAt: post.createdAt,
+                    updatedAt: post.updatedAt,
+                    likes: post.likes.length,
+                    comments,
+                },
+            };
+        } catch (error) {
+            throw error;
+        }
+    };
 }
-
 
 module.exports = PostsService;
