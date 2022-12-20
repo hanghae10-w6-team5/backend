@@ -1,6 +1,9 @@
 const CommentsRepository = require('../repositories/comments.repository.js');
 const { Comments, Users, Posts } = require('../models');
-const { ValidationError } = require('../exception/index.exception');
+const {
+    ValidationError,
+    AuthenticationError,
+} = require('../exception/index.exception');
 
 class CommentsService {
     // 데이터 모델을 Repository에 생성자 주입 방식을 이용해 의존성 주입
@@ -43,9 +46,9 @@ class CommentsService {
 
         if (!commentData) {
             throw new ValidationError('해당 댓글을 찾을 수 없습니다.', 404);
-        } else if (commentData.postId !== postId) {
+        } else if (commentData.postId != postId) {
             throw new ValidationError('해당 게시글을 찾을 수 없습니다.', 404);
-        } else if (commentData.userId !== userId) {
+        } else if (commentData.userId != userId) {
             throw new AuthenticationError('권한이 없는 유저입니다.', 404);
         }
 
@@ -72,9 +75,9 @@ class CommentsService {
 
         if (!commentData) {
             throw new ValidationError('해당 댓글을 찾을 수 없습니다.', 404);
-        } else if (commentData.postId !== postId) {
+        } else if (commentData.postId != postId) {
             throw new ValidationError('해당 게시글을 찾을 수 없습니다.', 404);
-        } else if (commentData.userId !== userId) {
+        } else if (commentData.userId != userId) {
             throw new AuthenticationError('권한이 없는 유저입니다.', 404);
         }
 
