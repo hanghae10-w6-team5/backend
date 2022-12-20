@@ -70,6 +70,21 @@ class PostsController {
                 price,
                 thumbnail
             );
+
+            if (!userId) {
+                throw new InvalidParamsError(
+                    '로그인이 필요한 서비스 입니다.',
+                    403
+                );
+            }
+
+            if (!title || !detail || !price || thumbnail) {
+                throw new InvalidParamsError(
+                    '요청한 데이터 형식이 올바르지 않습니다.',
+                    400
+                );
+            }
+
             res.status(200).json({ data: updatePost });
         } catch (error) {
             next(error);

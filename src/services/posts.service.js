@@ -97,6 +97,10 @@ class PostsService {
                     404
                 );
 
+            if (userId !== updatePost.userId) {
+                throw new AuthenticationError('권한이 없는 유저입니다.', 403);
+            }
+
             await this.postsRepository.updatePost(
                 userId,
                 postId,
@@ -106,22 +110,6 @@ class PostsService {
                 thumbnail
             );
             const updatePost = await this.postsRepository.getOnePost(postId);
-
-            if (!userId) {
-                throw new InvalidParamsError(
-                    '로그인이 필요한 서비스 입니다.',
-                    403
-                );
-            }
-            if (userId !== updatePost.userId) {
-                throw new InvalidParamsError('권한이 없는 유저입니다.', 403);
-            }
-            if (!title || !detail || !price || thumbnail) {
-                throw new InvalidParamsError(
-                    '요청한 데이터 형식이 올바르지 않습니다.',
-                    400
-                );
-            }
 
             return {
                 postId: updatePost.postId,
