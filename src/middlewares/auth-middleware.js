@@ -4,21 +4,16 @@ const { AuthenticationError, ValidationError } = require('../exception/index.exc
 const env = process.env;
 
 module.exports = (req, res, next) => {
-  const { authorization } = req.cookies;
+  const authorization = req.get('authorization');
 
-  const [authType, authToken] = (authorization || "").split("%");
-
-  if (!authToken || authType !== "Bearer") {
+  if (!authorization) {
     throw new AuthenticationError('로그인이 필요한 서비스입니다.', 412);
   }
 
   try {
     const { userId } = jwt.verify(authToken, env.TOKEN_SECRETE_KEY);
-
-    Users.findByPk(userId).then((user) => {
-      res.locals.user = user;
-      next();
-    });
+    res.locals.user = userId;
+    next();
   } catch (err) {
     throw new AuthenticationError('로그인이 필요한 서비스입니다.', 412);
   }

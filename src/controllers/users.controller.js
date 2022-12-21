@@ -56,9 +56,9 @@ class UsersController {
             }
 
             const token = await this.UsersService.loginUser(id, password);
-            
-            return res.cookie("authorization", `Bearer%${token}`).status(200).json({
-                authentication: token
+
+            return res.status(200).json({
+                authorization: token
             })
         } catch (err) {
             next(err);
@@ -67,10 +67,10 @@ class UsersController {
 
     getUserDetail = async (req, res, next) => {
         try {
-            const { userId } = res.locals.user;
+            const userId = res.locals.user;
 
             if (!userId) {
-                throw new InvalidParamsError('알 수 없는 오류가 발생했습니다.', 400);
+                throw new AuthenticationError('알 수 없는 오류가 발생했습니다.', 400);
             }
 
             const target_user_detail = await this.UsersService.getUserDetail(userId);

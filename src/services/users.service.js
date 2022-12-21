@@ -2,7 +2,7 @@ const UsersRepository = require("../repositories/users.repository");
 const { Users } = require('../models');
 const { AuthenticationError, ValidationError } = require("../exception/index.exception");
 const { hash } = require('../util/auth-encryption.util');
-const { tokenObject, createToken, setCookieExpiration } = require('../util/auth-jwtToken.util');
+const { tokenObject, createToken } = require('../util/auth-jwtToken.util');
 
 class UsersService {
     constructor() {

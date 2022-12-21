@@ -10,10 +10,4 @@ function createToken(id, duration) {
     });
 }
 
-const setCookieExpiration = function (hours) {
-    const expires = new Date();
-    expires.setHours(expires.getHours() + hours);
-    return expires;
-};
-
-module.exports = { tokenObject, createToken, setCookieExpiration };
+module.exports = { tokenObject, createToken };
