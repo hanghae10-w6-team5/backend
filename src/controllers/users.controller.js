@@ -51,21 +51,35 @@ class UsersController {
         try {
             const { id, password } = req.body;
 
-            if (req.token) {
-                throw new AuthenticationError('이미 로그인된 사용자입니다.', 400);
-            }
-
             if (!id || !password) {
                 throw new InvalidParamsError;
             }
 
             const token = await this.UsersService.loginUser(id, password);
             
-            return res.status(200).json({
+            return res.cookie("authorization", `Bearer%${token}`).status(200).json({
                 authentication: token
             })
         } catch (err) {
             next(err);
+        }
+    }
+
+    getUserDetail = async (req, res, next) => {
+        try {
+            const { userId } = res.locals.user;
+
+            if (!userId) {
+                throw new InvalidParamsError('알 수 없는 오류가 발생했습니다.', 400);
+            }
+
+            const target_user_detail = await this.UsersService.getUserDetail(userId);
+
+            return res.status(200).json({
+                data: target_user_detail
+            });
+        } catch (err) {
+            console.log(err);
         }
     }
 }

@@ -14,8 +14,6 @@ class UsersService {
         if (target_user) {
             throw new ValidationError('이미 사용 중인 id 입니다.', 412);
         }
-
-        return target_user;
     }
 
     signUpUser = async (id, password) => {
@@ -25,8 +23,6 @@ class UsersService {
         if (!newUser) {
             throw new ValidationError;
         }
-
-        return newUser;
     }
 
     loginUser = async (id, password) => {
@@ -41,6 +37,22 @@ class UsersService {
         const token = createToken(target_user.userId, '1h');
         return token;
     }
+
+    getUserDetail = async (userId) => {
+        const target_user = await this.usersRepository.findUserByUserId(userId);
+
+        if (!target_user) {
+            throw new ValidationError;
+        }
+
+        const user_detail = {
+            id: target_user.id,
+            createdAt: target_user.createdAt
+        }
+
+        return user_detail;
+    }
+
 }
 
 module.exports = UsersService;
