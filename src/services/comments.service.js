@@ -43,9 +43,9 @@ class CommentsService {
 
         if (!commentData) {
             throw new ValidationError('해당 댓글을 찾을 수 없습니다.', 404);
-        } else if (commentData.postId !== postId) {
+        } else if (commentData.postId != postId) {
             throw new ValidationError('해당 게시글을 찾을 수 없습니다.', 404);
-        } else if (commentData.userId !== userId) {
+        } else if (commentData.userId != userId) {
             throw new AuthenticationError('권한이 없는 유저입니다.', 404);
         }
 
@@ -72,9 +72,9 @@ class CommentsService {
 
         if (!commentData) {
             throw new ValidationError('해당 댓글을 찾을 수 없습니다.', 404);
-        } else if (commentData.postId !== postId) {
+        } else if (commentData.postId != postId) {
             throw new ValidationError('해당 게시글을 찾을 수 없습니다.', 404);
-        } else if (commentData.userId !== userId) {
+        } else if (commentData.userId != userId) {
             throw new AuthenticationError('권한이 없는 유저입니다.', 404);
         }
 

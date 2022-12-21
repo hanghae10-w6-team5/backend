@@ -14,8 +14,7 @@ class CommentsController {
         try {
             // 클라에서 전달받은 req 값을 구조분해 할당
             const { postId } = req.params;
-            const userId = req.get('userId');
-            // res.locals.user
+            const userId = res.locals.user;
             const { comment } = req.body;
 
             // 값을 검증하고, 상황에 맞는 에러객체에 메세지와 status code를 포함하여 에러 처리
