@@ -96,7 +96,7 @@ class PostsService {
                     404
                 );
 
-            if (userId !== updatePost.userId) {
+            if (userId !== post.userId) {
                 throw new AuthenticationError('권한이 없는 유저입니다.', 403);
             }
 
@@ -112,7 +112,7 @@ class PostsService {
 
             return {
                 postId: updatePost.postId,
-                id: updatePost.id,
+                id: updatePost.User.id,
                 title: updatePost.title,
                 detail: updatePost.detail,
                 price: updatePost.price,

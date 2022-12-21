@@ -24,7 +24,7 @@ class PostsController {
         try {
             const { title, price, detail, thumbnail } = req.body;
             const userId = res.locals.user;
-
+            console.log(userId);
             if (!title || !price || !detail) throw new InvalidParamsError();
 
             const post = await this.postsService.createPost(
