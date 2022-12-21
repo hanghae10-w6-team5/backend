@@ -10,19 +10,16 @@ class LikesService {
         this.likesRepository = new LikesRepository();
     }
 
-    createPostLike = async (postId, userId) => {
-        const existLike = await this.likesRepository.createPostLike(
-            postId,
-            userId
-        );
+    checkPostLike = async (postId, userId) => {
+        const isLike = await this.likesRepository.checkPostLike(postId, userId);
 
-        if (!existLike) {
+        if (!isLike) {
             await this.likesRepository.createLike(postId, userId);
+            return false;
         } else {
             await this.likesRepository.deleteLike(postId, userId);
+            return true;
         }
-
-        return existLike;
     };
 }
 

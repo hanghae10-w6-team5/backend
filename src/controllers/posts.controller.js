@@ -1,7 +1,9 @@
 const PostsService = require('../services/posts.service');
-const { InvalidParamsError } = require('../exception/index.exception.js');
-const { ValidationError } = require('sequelize');
-const { authenticate } = require('passport');
+const {
+    InvalidParamsError,
+    ValidationError,
+    AuthenticationError,
+} = require('../exception/index.exception.js');
 
 class PostsController {
     constructor() {
@@ -21,8 +23,7 @@ class PostsController {
     createPost = async (req, res, next) => {
         try {
             const { title, price, detail, thumbnail } = req.body;
-            const userId = req.get('userId');
-            //const userId = res.locals.user;
+            const userId = res.locals.user;
 
             if (!title || !price || !detail) throw new InvalidParamsError();
 
@@ -47,7 +48,14 @@ class PostsController {
             const { postId } = req.params;
             const post = await this.postsService.getOnePost(postId);
 
-            if (!post) throw new InvalidParamsError();
+            if (!post) throw new ValidationError();
+
+            if (!postId) {
+                throw new InvalidParamsError(
+                    '해당 게시글을 찾을 수 없습니다.',
+                    400
+                );
+            }
 
             res.status(200).json({ data: post });
         } catch (error) {
@@ -59,9 +67,8 @@ class PostsController {
         try {
             const { postId } = req.params;
             const { title, detail, price, thumbnail } = req.body;
-            const userId = req.get('userId');
-            // const userId = res.locals.user;
-            // const userId = 1;
+            const userId = res.locals.user;
+
             const updatePost = await this.postsService.updatePost(
                 userId,
                 postId,
@@ -74,12 +81,12 @@ class PostsController {
             if (!postId) {
                 throw new InvalidParamsError(
                     '해당 게시글을 찾을 수 없습니다.',
-                    40
+                    400
                 );
             }
 
             if (!userId) {
-                throw new InvalidParamsError(
+                throw new AuthenticationError(
                     '로그인이 필요한 서비스 입니다.',
                     403
                 );
@@ -100,10 +107,9 @@ class PostsController {
 
     deletePost = async (req, res, next) => {
         try {
-            // const userId = res.locals.user;
-            const userId = 1;
+            const userId = res.locals.user;
+
             const { postId } = req.params;
-            // const userId = req.get('userId');
 
             if (!postId) {
                 throw new InvalidParamsError(
@@ -113,7 +119,7 @@ class PostsController {
             }
 
             if (!userId) {
-                throw new InvalidParamsError(
+                throw new AuthenticationError(
                     '로그인이 필요한 서비스 입니다.',
                     403
                 );

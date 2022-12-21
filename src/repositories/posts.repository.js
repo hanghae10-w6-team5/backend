@@ -27,26 +27,22 @@ class PostsRepository {
         const post = await this.postsModel.findOne({
             where: { postId },
             include: [
-                { model: this.usersModel, as: 'User', attributes: ['id'] },
+                { model: this.usersModel, attributes: ['id'] },
                 {
                     model: this.likesModel,
                     as: 'likes',
                     attributes: ['likeId'],
                 },
+                {
+                    model: this.commentsModel,
+                    as: 'Comments',
+                    attributes: ['commentId', 'comment', 'updatedAt'],
+                    order: [['updatedAt', 'DESC']],
+                    include: [{ model: this.usersModel, attributes: ['id'] }],
+                },
             ],
         });
         return post;
-    };
-
-    getAllComment = async (postId) => {
-        const comment = await this.commentsModel.findAll({
-            raw: true,
-            where: { postId },
-            attributes: ['commentId', 'comment', 'updatedAt'],
-            order: [['updatedAt', 'DESC']],
-            include: [{ model: this.usersModel, attributes: ['id'] }],
-        });
-        return comment;
     };
 
     updatePost = async (userId, postId, title, detail, price, thumbnail) => {

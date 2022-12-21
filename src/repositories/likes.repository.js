@@ -6,7 +6,7 @@ class LikesRepository {
         this.likesModel = likes;
     }
 
-    createPostLike = async (postId, userId) => {
+    checkPostLike = async (postId, userId) => {
         return this.likesModel.findOne({
             where: {
                 [Op.and]: [{ postId }, { userId }],

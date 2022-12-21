@@ -1,6 +1,5 @@
 const PostsRepository = require('../repositories/posts.repository');
 const {
-    InvalidParamsError,
     ValidationError,
     AuthenticationError,
 } = require('../exception/index.exception');
@@ -52,7 +51,7 @@ class PostsService {
     getOnePost = async (postId) => {
         try {
             const post = await this.postsRepository.getOnePost(postId);
-            const Comment = await this.postsRepository.getAllComment(postId);
+
             if (!post)
                 throw new ValidationError(
                     '해당 게시글을 찾을 수 없습니다.',
@@ -60,8 +59,8 @@ class PostsService {
                 );
 
             let comments = [];
-            if (Comment.length) {
-                Comment.map((c) => {
+            if (post.Comment) {
+                post.Comment.map((c) => {
                     comments.push({
                         commentId: c.commentId,
                         id: c['User.id'],
@@ -131,8 +130,6 @@ class PostsService {
         const existPost = await this.postsRepository.findPost(postId);
         if (!existPost)
             throw new ValidationError('해당 게시글을 찾을 수 없습니다.', 404);
-
-        await this.postsRepository.deletePost(userId, postId);
 
         if (userId !== existPost.userId) {
             throw new AuthenticationError('권한이 없는 유저입니다.', 403);

@@ -1,32 +1,33 @@
 const LikesService = require('../services/likes.services');
-const { InvalidParamsError } = require('../exception/index.exception.js');
-const { ValidationError } = require('sequelize');
-const { authenticate } = require('passport');
+const {
+    InvalidParamsError,
+    AuthenticationError,
+} = require('../exception/index.exception.js');
 
 class LikesController {
     constructor() {
         this.likesService = new LikesService();
     }
 
-    createPostLike = async (req, res, next) => {
+    checkPostLike = async (req, res, next) => {
         try {
-            // const userId = res.locals.user;
-            // const userId = 1;
-            const userId = req.get('userId');
             const { postId } = req.params;
+            const userId = res.locals.user;
 
-            if (!postId)
-                throw new ValidationError(
-                    '요청한 형식이 올바르지 않습니다.',
-                    400
-                );
             if (!userId)
-                throw new InvalidParamsError(
+                throw new AuthenticationError(
                     '로그인이 필요한 서비스입니다.',
                     403
                 );
 
-            const isLike = await this.likesService.createPostLike(
+            if (!postId) {
+                throw new InvalidParamsError(
+                    '요청한 형식이 올바르지 않습니다.',
+                    400
+                );
+            }
+
+            const isLike = await this.likesService.checkPostLike(
                 postId,
                 userId
             );
