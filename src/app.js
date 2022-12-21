@@ -23,6 +23,13 @@ app.use('/api', routes);
 app.use(errorLogger); // Error Logger
 app.use(errorHandler); // Error Handler
 
+app.get('/', async (req, res) => {
+    console.log('ues')
+    req.cookies;
+    res.clearCookie('authorization');
+    return { message: "Done"};
+})
+
 app.listen(PORT, () => {
     console.log(PORT, '서버를 실행 중 입니다.');
 });

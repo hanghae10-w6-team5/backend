@@ -1,6 +1,5 @@
 const PostsRepository = require('../repositories/posts.repository');
 const {
-    InvalidParamsError,
     ValidationError,
     AuthenticationError,
 } = require('../exception/index.exception');
@@ -52,13 +51,16 @@ class PostsService {
     getOnePost = async (postId) => {
         try {
             const post = await this.postsRepository.getOnePost(postId);
-            const Comment = await this.postsRepository.getAllComment(postId);
+
             if (!post)
-                throw ValidationError('해당 게시글을 찾을 수 없습니다.', 404);
+                throw new ValidationError(
+                    '해당 게시글을 찾을 수 없습니다.',
+                    404
+                );
 
             let comments = [];
-            if (Comment.length !== 0) {
-                Comment.forEach((c) => {
+            if (post.Comment) {
+                post.Comment.map((c) => {
                     comments.push({
                         commentId: c.commentId,
                         id: c['User.id'],
@@ -68,22 +70,72 @@ class PostsService {
                 });
             }
             return {
-                data: {
-                    postId: post.postId,
-                    id: post.User.id,
-                    title: post.title,
-                    detail: post.detail,
-                    price: post.price,
-                    thumbnail: post.thumbnail,
-                    createdAt: post.createdAt,
-                    updatedAt: post.updatedAt,
-                    likes: post.likes.length,
-                    comments,
-                },
+                postId: post.postId,
+                id: post.User.id,
+                title: post.title,
+                detail: post.detail,
+                price: post.price,
+                thumbnail: post.thumbnail,
+                createdAt: post.createdAt,
+                updatedAt: post.updatedAt,
+                likes: post.likes.length,
+                comments,
             };
         } catch (error) {
             throw error;
         }
+    };
+
+    updatePost = async (userId, postId, title, detail, price, thumbnail) => {
+        try {
+            const post = await this.postsRepository.getOnePost(postId);
+
+            if (!post)
+                throw new ValidationError(
+                    '해당 게시글을 찾을 수 없습니다.',
+                    404
+                );
+
+            if (userId !== post.userId) {
+                throw new AuthenticationError('권한이 없는 유저입니다.', 403);
+            }
+
+            await this.postsRepository.updatePost(
+                userId,
+                postId,
+                title,
+                detail,
+                price,
+                thumbnail
+            );
+            const updatePost = await this.postsRepository.getOnePost(postId);
+
+            return {
+                postId: updatePost.postId,
+                id: updatePost.User.id,
+                title: updatePost.title,
+                detail: updatePost.detail,
+                price: updatePost.price,
+                thumbnail: updatePost.thumbnail,
+                createdAt: updatePost.createdAt,
+                updatedAt: updatePost.updatedAt,
+                likes: updatePost.likes.length,
+            };
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    deletePost = async (userId, postId) => {
+        const existPost = await this.postsRepository.findPost(postId);
+        if (!existPost)
+            throw new ValidationError('해당 게시글을 찾을 수 없습니다.', 404);
+
+        if (userId !== existPost.userId) {
+            throw new AuthenticationError('권한이 없는 유저입니다.', 403);
+        }
+
+        await this.postsRepository.deletePost(userId, postId);
     };
 }
 
