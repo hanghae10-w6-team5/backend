@@ -15,7 +15,6 @@ module.exports = (req, res, next) => {
 
     try {
         const { userId } = jwt.verify(authentication, env.TOKEN_SECRETE_KEY);
-        console.log(userId);
         res.locals.user = userId;
         next();
     } catch (err) {
