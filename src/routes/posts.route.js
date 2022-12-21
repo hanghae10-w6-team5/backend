@@ -33,4 +33,9 @@ router.patch('/:postId', async (req, res) => {
     res.status(200).json({ data: post });
 });
 
+const PostsController = require('../controllers/posts.controller');
+const postsController = new PostsController();
+
+router.get('/:postId', postsController.getOnePost);
+
 module.exports = router;
