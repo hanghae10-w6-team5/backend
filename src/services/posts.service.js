@@ -59,11 +59,11 @@ class PostsService {
                 );
 
             let comments = [];
-            if (post.Comment) {
-                post.Comment.map((c) => {
+            if (post.Comments) {
+                post.Comments.map((c) => {
                     comments.push({
                         commentId: c.commentId,
-                        id: c['User.id'],
+                        id: c.User.id,
                         comment: c.comment,
                         updatedAt: c.updatedAt,
                     });
