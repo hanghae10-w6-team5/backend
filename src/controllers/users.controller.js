@@ -58,7 +58,7 @@ class UsersController {
             const token = await this.UsersService.loginUser(id, password);
 
             return res.status(200).json({
-                authorization: token
+                authentication: token
             })
         } catch (err) {
             next(err);

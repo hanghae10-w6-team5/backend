@@ -4,9 +4,9 @@ const { AuthenticationError, ValidationError } = require('../exception/index.exc
 const env = process.env;
 
 module.exports = (req, res, next) => {
-  const authorization = req.get('authorization');
+  const authentication = req.get('authentication');
 
-  if (!authorization) {
+  if (!authentication) {
     throw new AuthenticationError('로그인이 필요한 서비스입니다.', 412);
   }
 
