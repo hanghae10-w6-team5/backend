@@ -3,7 +3,7 @@ const { Comments, Users, Posts } = require('../models');
 const { ValidationError } = require('../exception/index.exception');
 
 class CommentsService {
-    // 데이터 모델을 Repository에 생성자 주입 방식을 이용해 의존성 주입
+    // 데이터 모델을 Repository에 생성자 주입 방식으로 의존성 주입
     constructor() {
         this.commentsRepository = new CommentsRepository(
             Comments,
@@ -12,7 +12,7 @@ class CommentsService {
         );
     }
 
-    // 댓글 생성을 위해 사용하는 메서드
+    // 댓글 생성 메서드
     createComment = async ({ postId, userId, comment }) => {
         // 전달받은 값을 이용해 db에 댓글 생성
         const newComment = await this.commentsRepository.createComment({
@@ -24,11 +24,12 @@ class CommentsService {
         // 만약, newComment가 null이면, 에러를 던짐
         if (!newComment) throw new ValidationError();
 
+        // 새로 생성된 댓글의 id를 이용해, 댓글을 작성한 user 정보까지 db에서 조회
         const commentWithId = await this.commentsRepository.findComment(
             newComment.commentId
         );
 
-        // 생성된 댓글과 작성한 유저 정보를 컨트롤러에 전달
+        // api 명세서에서 약속한 res 값대로 댓글 정보를 담아 컨트롤러에 전달
         return {
             id: commentWithId['User.id'],
             comment: commentWithId.comment,

@@ -1,7 +1,6 @@
 const CommentsService = require('../services/comments.service');
 const {
     InvalidParamsError,
-    ValidationError,
     AuthenticationError,
 } = require('../exception/index.exception');
 
@@ -14,68 +13,74 @@ class CommentsController {
         try {
             // 클라에서 전달받은 req 값을 구조분해 할당
             const { postId } = req.params;
-            const userId = res.locals.user;
             const { comment } = req.body;
+            // 인증 미들웨어에서 넘겨준 userId를 userId에 할당
+            const userId = res.locals.user;
 
-            // 값을 검증하고, 상황에 맞는 에러객체에 메세지와 status code를 포함하여 에러 처리
+            // 만약 토큰 페이로드에 userId 값이 담겨 있지 않다면 undefined를 반환하므로, 여기서 한 번 더 검증
             if (!userId) {
                 throw new AuthenticationError();
             }
-            if (!postId) {
-                throw new InvalidParamsError(
-                    '해당 게시글이 존재하지 않습니다.',
-                    404
-                );
-            } else if (!comment || typeof comment !== 'string') {
+            // req.body 값 유무와 string으로 받아 오는지 검증
+            else if (!comment || typeof comment !== 'string') {
                 throw new InvalidParamsError();
             }
 
-            // 검증이 완료된 데이터를 db에 저장
+            // req에서 받아온 값들을 서비스 레이어로 넘겨 댓글 생성 비즈니스 로직 처리
             const newComment = await this.commentsService.createComment({
                 postId: Number(postId),
                 userId,
                 comment,
             });
 
-            // 댓글 저장 성공시, 클라로 새로 추가한 댓글 정보 전달
+            // 댓글 저장 성공시, 클라로 새로 추가한 댓글 정보를 전달
             res.status(201).json({ data: newComment });
         } catch (err) {
+            // 발생한 모든 에러는 에러핸들러 미들웨어를 거쳐 처리
             next(err);
         }
     };
 
     updateComment = async (req, res, next) => {
         try {
+            // 클라에서 전달받은 req 값을 구조분해 할당
             const { postId, commentId } = req.params;
-            const userId = req.get('userId'); //res.locals.user
             const { comment } = req.body;
+            // 인증 미들웨어에서 넘겨준 userId를 userId에 할당
+            const userId = res.locals.user;
 
-            if (!comment || typeof comment !== 'string') {
+            // 만약 토큰 페이로드에 userId 값이 담겨 있지 않다면 undefined를 반환하므로, 여기서 한 번 더 검증
+            if (!userId) {
+                throw new AuthenticationError();
+            }
+            // req.body 값 유무와 string으로 받아 오는지 검증
+            else if (!comment || typeof comment !== 'string') {
                 throw new InvalidParamsError();
-            } else if (!userId) {
-                throw new AuthenticationError(
-                    '로그인이 필요한 서비스입니다.',
-                    403
-                );
             }
 
+            // req에서 받아온 값들을 서비스 레이어로 넘겨 댓글 수정 비즈니스 로직 처리
             const editComment = await this.commentsService.editComment(
                 Number(postId),
                 Number(commentId),
                 userId,
                 comment
             );
+            // 서비스 레이어에서 처리한 데이터를 클라로 넘겨 줌
             res.status(200).json(editComment);
         } catch (err) {
+            // 발생한 모든 에러는 에러핸들러 미들웨어를 거쳐 처리
             next(err);
         }
     };
 
     deleteComment = async (req, res, next) => {
         try {
+            // 클라에서 전달받은 req 값을 구조분해 할당
             const { postId, commentId } = req.params;
-            const userId = req.get('userId'); //res.locals.user
+            // 인증 미들웨어에서 넘겨준 userId를 userId에 할당
+            const userId = res.locals.user;
 
+            // 만약 토큰 페이로드에 userId 값이 담겨 있지 않다면 undefined를 반환하므로, 여기서 한 번 더 검증
             if (!userId) {
                 throw new AuthenticationError(
                     '로그인이 필요한 서비스입니다.',
@@ -83,14 +88,16 @@ class CommentsController {
                 );
             }
 
+            // req에서 받아온 값들을 서비스 레이어로 넘겨 댓글 삭제 비즈니스 로직 처리
             await this.commentsService.deleteComment(
                 Number(postId),
                 Number(commentId),
                 userId
             );
-
+            // 서비스 레이어에서 처리한 데이터를 클라로 넘겨 줌
             res.status(200).json({ message: '댓글이 삭제되었습니다.' });
         } catch (err) {
+            // 발생한 모든 에러는 에러핸들러 미들웨어를 거쳐 처리
             next(err);
         }
     };
