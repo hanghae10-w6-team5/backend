@@ -85,7 +85,7 @@ class PostsController {
                 );
             }
 
-            if (!title || !detail || !price || thumbnail) {
+            if (!title || !detail || !price) {
                 throw new InvalidParamsError(
                     '요청한 데이터 형식이 올바르지 않습니다.',
                     400
@@ -101,9 +101,9 @@ class PostsController {
     deletePost = async (req, res, next) => {
         try {
             // const userId = res.locals.user;
-            // const userId = 1;
+            const userId = 1;
             const { postId } = req.params;
-            const userId = req.get('userId');
+            // const userId = req.get('userId');
 
             if (!postId) {
                 throw new InvalidParamsError(
@@ -118,8 +118,6 @@ class PostsController {
                     403
                 );
             }
-
-            await this.postsService.findPost(postId);
 
             await this.postsService.deletePost(userId, postId);
 

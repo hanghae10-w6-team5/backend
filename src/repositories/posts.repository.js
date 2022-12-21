@@ -43,7 +43,7 @@ class PostsRepository {
             raw: true,
             where: { postId },
             attributes: ['commentId', 'comment', 'updatedAt'],
-            order: [['createdAt', 'DESC']],
+            order: [['updatedAt', 'DESC']],
             include: [{ model: this.usersModel, attributes: ['id'] }],
         });
         return comment;
@@ -58,7 +58,7 @@ class PostsRepository {
     };
 
     deletePost = async (userId, postId) => {
-        const deletePost = await this.postsModel.destroy({
+        return await this.postsModel.destroy({
             where: { userId, postId },
         });
 
