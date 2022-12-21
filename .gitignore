@@ -103,6 +103,6 @@ dist
 # TernJS port file
 .tern-port
 
+README.md
 package-lock.json
 package.json
-README.md
