@@ -57,8 +57,6 @@ class PostsRepository {
         return await this.postsModel.destroy({
             where: { userId, postId },
         });
-
-        return deletePost;
     };
 
     findPost = async (postId) => {

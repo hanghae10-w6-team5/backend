@@ -1,9 +1,4 @@
 const LikesRepository = require('../repositories/likes.repository');
-const {
-    InvalidParamsError,
-    ValidationError,
-    AuthenticationError,
-} = require('../exception/index.exception');
 
 class LikesService {
     constructor() {
