@@ -114,7 +114,7 @@ class PostsController {
             if (!postId) {
                 throw new InvalidParamsError(
                     '해당 게시글을 찾을 수 없습니다.',
-                    40
+                    400
                 );
             }
 
