@@ -11,6 +11,7 @@ class PostsController {
     postLookup = async (req, res, next) => {
         try {
             const posts = await this.postsService.findAllPost();
+
             if (!posts) throw new ValidationError();
             res.status(200).json({ data: posts });
         } catch (error) {
@@ -21,10 +22,32 @@ class PostsController {
     createPost = async (req, res, next) => {
         try {
             const { title, price, detail, thumbnail } = req.body;
-            const userId = req.get('userId');
-            //const userId = res.locals.user;
+            const userId = res.locals.user;
 
-            if (!title || !price || !detail) throw new InvalidParamsError();
+            if (!userId) {
+                throw new AuthenticationError(
+                    '로그인이 필요한 서비스입니다',
+                    403
+                );
+            }
+
+            if (!title || !price || !detail)
+                throw new InvalidParamsError(
+                    '요청한 데이터 형식이 올바르지 않습니다',
+                    400
+                );
+
+            if (typeof title !== 'string' || typeof detail !== 'string')
+                throw new InvalidParamsError(
+                    '요청한 데이터 형식이 올바르지 않습니다',
+                    400
+                );
+
+            if (typeof price !== 'number')
+                throw new InvalidParamsError(
+                    '요청한 데이터 형식이 올바르지 않습니다',
+                    400
+                );
 
             const post = await this.postsService.createPost(
                 userId,
