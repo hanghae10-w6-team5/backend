@@ -9,6 +9,7 @@ class UsersService {
         this.usersRepository = new UsersRepository(Users);
     }
 
+    // throws ValidationError if there is a duplicate id
     signUpDuplicateIdCheck = async (id) => {
         const target_user = await this.usersRepository.findUser(id);
         if (target_user) {
@@ -16,6 +17,7 @@ class UsersService {
         }
     }
 
+    // signUpUser with a hashed password - create a user in Users table
     signUpUser = async (id, password) => {
         const hashed_pw = hash(password);
         const newUser = await this.usersRepository.createUser(id, hashed_pw);
@@ -25,7 +27,9 @@ class UsersService {
         }
     }
 
+    // loginUser - find if there is a user with a given id
     loginUser = async (id, password) => {
+        // find a user from Users table using id
         const target_user = await this.usersRepository.findUser(id);
         const hashed_pw = hash(password);
 
@@ -38,13 +42,16 @@ class UsersService {
         return token;
     }
 
+    // getUserDetail - find if there is a user with a given userId
     getUserDetail = async (userId) => {
+        // find a user from Users table using userId
         const target_user = await this.usersRepository.findUserByUserId(userId);
 
         if (!target_user) {
             throw new ValidationError;
         }
 
+        // construct a new object user_detail
         const user_detail = {
             id: target_user.id,
             createdAt: target_user.createdAt
