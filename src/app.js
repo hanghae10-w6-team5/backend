@@ -11,6 +11,8 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const PORT = process.env.PORT;
 
+const logger = require('./config/logger');
+
 //Body
 app.use(cors());
 app.use(express.json());
@@ -24,12 +26,22 @@ app.use(errorLogger); // Error Logger
 app.use(errorHandler); // Error Handler
 
 app.get('/', async (req, res) => {
-    console.log('ues')
+    console.log('ues');
     req.cookies;
     res.clearCookie('authorization');
-    return { message: "Done"};
-})
+    return { message: 'Done' };
+});
+
+app.get('/', (req, res) => {
+    logger.info('GET /');
+    res.sendStatus(200);
+});
+
+app.get('/error', (req, res) => {
+    logger.error('Error message');
+    res.sendStatus(500);
+});
 
 app.listen(PORT, () => {
-    console.log(PORT, '서버를 실행 중 입니다.');
+    logger.info(`'${PORT} 서버를 실행 중 입니다.'`);
 });
