@@ -26,7 +26,10 @@ class PostsService {
                     title: post.title,
                     price: post.price,
                     thumbnail: post.thumbnail,
-                    updatedAt: post.updatedAt,
+                    updatedAt: post.updatedAt.toLocaleString('ko-KR', {
+                        timeZone: 'UTC',
+                    }),
+                    likes: post.likes.length,
                 },
             };
         });
@@ -62,7 +65,9 @@ class PostsService {
                         commentId: c.commentId,
                         id: c.User.id,
                         comment: c.comment,
-                        updatedAt: c.updatedAt,
+                        updatedAt: c.updatedAt.toLocaleString('ko-KR', {
+                            timeZone: 'UTC',
+                        }),
                     });
                 });
             }
@@ -74,8 +79,12 @@ class PostsService {
                 detail: post.detail,
                 price: post.price,
                 thumbnail: post.thumbnail,
-                createdAt: post.createdAt,
-                updatedAt: post.updatedAt,
+                createdAt: post.createdAt.toLocaleString('ko-KR', {
+                    timeZone: 'UTC',
+                }),
+                updatedAt: post.updatedAt.toLocaleString('ko-KR', {
+                    timeZone: 'UTC',
+                }),
                 likes: post.likes.length,
                 comments,
             };
@@ -115,8 +124,12 @@ class PostsService {
                 detail: updatePost.detail,
                 price: updatePost.price,
                 thumbnail: updatePost.thumbnail,
-                createdAt: updatePost.createdAt,
-                updatedAt: updatePost.updatedAt,
+                createdAt: updatePost.createdAt.toLocaleString('ko-KR', {
+                    timeZone: 'UTC',
+                }),
+                updatedAt: updatePost.updatedAt.toLocaleString('ko-KR', {
+                    timeZone: 'UTC',
+                }),
                 likes: updatePost.likes.length,
             };
         } catch (error) {

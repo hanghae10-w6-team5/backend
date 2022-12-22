@@ -19,7 +19,14 @@ class PostsRepository {
 
     findAllPost = async () => {
         return await this.postsModel.findAll({
-            include: { model: this.usersModel, attributes: ['id'] },
+            include: [
+                { model: this.usersModel, attributes: ['id'] },
+                {
+                    model: this.likesModel,
+                    as: 'likes',
+                    attributes: ['likeId'],
+                },
+            ],
         });
     };
 

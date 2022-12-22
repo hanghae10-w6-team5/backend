@@ -36,7 +36,9 @@ class CommentsService {
         return {
             id: commentWithId['User.id'],
             comment: commentWithId.comment,
-            updatedAt: commentWithId.updatedAt,
+            updatedAt: commentWithId.updatedAt.toLocaleString('ko-KR', {
+                timeZone: 'UTC',
+            }),
         };
     };
 
@@ -65,7 +67,9 @@ class CommentsService {
 
         return {
             updateComment: result.comment,
-            updatedAt: result.updatedAt,
+            updatedAt: result.updatedAt.toLocaleString('ko-KR', {
+                timeZone: 'UTC',
+            }),
         };
     };
 
