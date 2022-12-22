@@ -3,7 +3,8 @@ const {
     ValidationError,
     AuthenticationError,
 } = require('../exception/index.exception');
-
+const jwt = require('jsonwebtoken');
+const env = process.env;
 class PostsService {
     constructor() {
         this.postsRepository = new PostsRepository();
@@ -74,6 +75,7 @@ class PostsService {
 
             return {
                 postId: post.postId,
+                userId: post.userId,
                 id: post.User.id,
                 title: post.title,
                 detail: post.detail,
