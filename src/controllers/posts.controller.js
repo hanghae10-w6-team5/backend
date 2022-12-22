@@ -4,6 +4,8 @@ const {
     ValidationError,
     AuthenticationError,
 } = require('../exception/index.exception.js');
+const jwt = require('jsonwebtoken');
+const env = process.env;
 
 class PostsController {
     constructor() {
@@ -69,6 +71,15 @@ class PostsController {
 
     getOnePost = async (req, res, next) => {
         try {
+            let userId;
+            if (req.get('authentication')) {
+                const authentication = req.get('authentication');
+                userId = jwt.verify(
+                    authentication,
+                    env.TOKEN_SECRETE_KEY
+                ).userId;
+            }
+
             const { postId } = req.params;
             const post = await this.postsService.getOnePost(postId);
 
@@ -81,7 +92,7 @@ class PostsController {
                 );
             }
 
-            res.status(200).json({ data: post });
+            res.status(200).json({ data: { post, loginUser: { userId } } });
         } catch (error) {
             next(error);
         }
